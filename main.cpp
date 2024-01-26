@@ -48,6 +48,22 @@ void printBoard(int square[ROWS][COLS]) {
     cout << "\n";
 }
 
+void computer(int square[ROWS][COLS]) {
+    int choice = rand() % COLS;
+    cout << "Computer's turn\t";
+
+    while (square[0][choice] != 0) {
+        choice = rand() % COLS;
+    }
+
+    for (int i = ROWS - 1; i >= 0; i--) {
+        if (square[i][choice] == 0) {
+            square[i][choice] = 2;
+            break;
+        }
+    }
+}
+
 void play(int square[ROWS][COLS], int &player, string names[], int gameMode) {
     int choice;
     if (player != 0) {
@@ -65,11 +81,13 @@ void play(int square[ROWS][COLS], int &player, string names[], int gameMode) {
             } else
                 break;
         }
-        for (int i = ROWS - 1; i >= 0; i--)
+
+        for (int i = ROWS - 1; i >= 0; i--) {
             if (square[i][choice] == 0) {
                 square[i][choice] = player;
                 break;
             }
+        }
 
         printBoard(square);
 
@@ -78,19 +96,7 @@ void play(int square[ROWS][COLS], int &player, string names[], int gameMode) {
         else
             player = 0;
     } else {
-        choice = rand() % COLS;
-        cout << names[player] << " 's turn\t";
-        while (true) {
-            if (square[0][choice] != 0) {
-                choice = rand() % COLS;
-            } else
-                break;
-        }
-        for (int i = ROWS - 1; i >= 0; i--)
-            if (square[i][choice] == 0) {
-                square[i][choice] = 2;
-                break;
-            }
+        computer(square);
         printBoard(square);
         player = (player & 1) + 1;
     }
@@ -128,13 +134,14 @@ int main() {
     srand(time(nullptr));
     int square[ROWS][COLS] = {};
     int gameMode = menu();
-    string names[3];
-    names[0] = names[2] = "Computer";
+    int player;
+    std::string names[3] = {"Computer", "", "Computer"};
     names[1] = getName(1);
-    if (gameMode == 1)
+    if (gameMode == 1) {
         names[2] = getName(2);
+        player = start(names);
+    } else player = 0;
     printBoard(square);
-    int player = start(names);
     while (checkWinner(square) == -1)
         play(square, player, names, gameMode);
     win(names[checkWinner(square)]);
