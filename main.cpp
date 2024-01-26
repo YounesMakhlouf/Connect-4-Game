@@ -10,18 +10,20 @@ const int COLS = 7, ROWS = 6;
 string getName(int player) {
     string name;
     cout << "player " << player << " : Enter your name\t";
-    cin >> name;
+    getline(cin >> ws, name);
     return name;
 }
 
 int start(string names[]) {
-    int turn = rand() % 2 + 1;
+    srand(time(nullptr));
+    int turn = (rand() & 1) + 1;
     cout << "\n" << names[turn] << " starts !\n\n";
     return turn;
 }
 
 int menu() {
     int choice = 0;
+
     cout << "\n\t\t **** Welcome to Connect 4 **** \n";
     cout << "\nMenu Options :\n";
     cout << "\tTo play vs player, enter 1\n\tTo play vs computer, enter 2 \n\t";
@@ -46,14 +48,14 @@ void printBoard(int square[ROWS][COLS]) {
     cout << "\n";
 }
 
-void play(int square[ROWS][COLS], int *player, string names[], int gameMode) {
+void play(int square[ROWS][COLS], int &player, string names[], int gameMode) {
     int choice;
-    if (*player != 0) {
+    if (player != 0) {
         while (true) {
-            cout << names[*player] << " : Choose a column\t";
+            cout << names[player] << " : Choose a column\t";
             cin >> choice;
             if (choice < 0 || choice >= COLS || cin.fail()) {
-                cout << "\t\tYou should enter correct values\n\n";
+                cout << "\t\tInvalid input. Please enter a valid column number.\n\n";
                 cin.clear();
                 cin.ignore(10000, '\n');
             } else if (square[0][choice] != 0) {
@@ -65,17 +67,19 @@ void play(int square[ROWS][COLS], int *player, string names[], int gameMode) {
         }
         for (int i = ROWS - 1; i >= 0; i--)
             if (square[i][choice] == 0) {
-                square[i][choice] = *player;
+                square[i][choice] = player;
                 break;
             }
+
         printBoard(square);
+
         if (gameMode == 1)
-            *player = (*player % 2) + 1;
+            player = (player & 1) + 1;
         else
-            *player = 0;
+            player = 0;
     } else {
         choice = rand() % COLS;
-        cout << names[*player] << " 's turn\t";
+        cout << names[player] << " 's turn\t";
         while (true) {
             if (square[0][choice] != 0) {
                 choice = rand() % COLS;
@@ -88,7 +92,7 @@ void play(int square[ROWS][COLS], int *player, string names[], int gameMode) {
                 break;
             }
         printBoard(square);
-        *player = (*player % 2) + 1;
+        player = (player & 1) + 1;
     }
 }
 
@@ -132,7 +136,7 @@ int main() {
     printBoard(square);
     int player = start(names);
     while (checkWinner(square) == -1)
-        play(square, &player, names, gameMode);
+        play(square, player, names, gameMode);
     win(names[checkWinner(square)]);
     return 0;
 }
