@@ -9,7 +9,7 @@ const int COLS = 7, ROWS = 6;
 
 string getName(int player) {
     string name;
-    cout << "player " << player << " : Enter your name\t";
+    cout << "Player " << player << ", Enter your name: ";
     getline(cin >> ws, name);
     return name;
 }
@@ -21,18 +21,20 @@ int start(string names[]) {
     return turn;
 }
 
-int menu() {
+int chooseGameMode() {
     int choice = 0;
 
-    cout << "\n\t\t **** Welcome to Connect 4 **** \n";
-    cout << "\nMenu Options :\n";
-    cout << "\tTo play vs player, enter 1\n\tTo play vs computer, enter 2 \n\t";
+    cout << "\n\t\t**** Welcome to Connect 4 **** \n";
+    cout << "\nMenu Options:\n";
+    cout << "\tTo play vs player, enter 1\n";
+    cout << "\tTo play vs computer, enter 2\n";
     cin >> choice;
+
     if ((choice != 1 && choice != 2) || cin.fail()) {
         cout << "Invalid input. Please enter 1 or 2.\n\n";
         cin.clear();
         cin.ignore(10000, '\n');
-        return menu();
+        return chooseGameMode();
     }
     return choice;
 }
@@ -133,9 +135,9 @@ void win(const string &winner) {
 int main() {
     srand(time(nullptr));
     int square[ROWS][COLS] = {};
-    int gameMode = menu();
+    int gameMode = chooseGameMode();
     int player;
-    std::string names[3] = {"Computer", "", "Computer"};
+    string names[3] = {"Computer", "", "Computer"};
     names[1] = getName(1);
     if (gameMode == 1) {
         names[2] = getName(2);
